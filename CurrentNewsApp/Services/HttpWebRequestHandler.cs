@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace CurrentNewsApp.Services
 {
@@ -16,7 +18,8 @@ namespace CurrentNewsApp.Services
             request.Method = "GET";
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 
-            var content = string.Empty;
+            string content;
+
 
             using (var response = (HttpWebResponse)request.GetResponse())
             {
@@ -24,7 +27,9 @@ namespace CurrentNewsApp.Services
                 {
                     using (var sr = new StreamReader(stream))
                     {
-                        content = sr.ReadToEnd();
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(sr.ReadToEnd());
+                        content = JsonConvert.SerializeXmlNode(doc);
                     }
                 }
             }
