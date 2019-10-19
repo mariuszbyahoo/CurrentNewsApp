@@ -9,21 +9,23 @@ namespace CurrentNewsApp.Models
 {
     public class NewsContext : DbContext
     {
-        public DbSet<News> newsSet;
-        public IHttpWebRequestHandler handler;
+        public DbSet<News> NewsSet { get; set; }
+        public IHttpWebRequestHandler handler = new HttpWebRequestHandler();
 
-        public NewsContext(DbContextOptions options, 
-            IHttpWebRequestHandler handler) : base(options)
+        public NewsContext(DbContextOptions<NewsContext> options) : base(options)
         {
-            this.handler = handler;
         }
 
+        // Ta metoda nie funkcjonuje jak planowałem; context nie otrzymuje na rozruchu aplikacji nowego obiektu i przypisanych do niego danych.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            {
-                modelBuilder.Entity<News>().HasData(new News().data = handler.GetNews("https://www.tvn24.pl/najnowsze.xml"));
-
-            }
+            modelBuilder.Entity<News>().HasData(
+                new News()
+                {
+                    Data = handler.GetNews("https://www.tvn24.pl/najnowsze.xml"),
+                    Id = Guid.NewGuid()
+                }
+            );
         }
     }
 }

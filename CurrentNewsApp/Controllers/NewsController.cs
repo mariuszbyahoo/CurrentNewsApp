@@ -11,7 +11,7 @@ namespace CurrentNewsApp.Controllers
     [Route("/api/news")]
     public class NewsController : ControllerBase
     {
-        private NewsContext _context;
+        private readonly NewsContext _context;
 
         public NewsController(NewsContext context)
         {
@@ -25,8 +25,12 @@ namespace CurrentNewsApp.Controllers
             if (_context.handler != null)
             {
                 News news = new News();
-                news.data = _context.handler.GetNews("https://www.tvn24.pl/najnowsze.xml"); // tu jest null i tu się wywala
-                return Ok(news.data);
+                news.Data = _context.handler.GetNews("https://www.tvn24.pl/najnowsze.xml");
+                //_context.NewsSet.Add(news); 
+                //_context.SaveChanges(); This line throws : SqlException: Invalid object name 'NewsSet'.
+                // if uncommented
+
+                return Ok(news.Data);
             }
             else
             {

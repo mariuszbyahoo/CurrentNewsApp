@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CurrentNewsApp.Models;
 using CurrentNewsApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace CurrentNewsApp
 {
@@ -27,7 +22,10 @@ namespace CurrentNewsApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped(typeof(IHttpWebRequestHandler), typeof(HttpWebRequestHandler));
-            services.AddDbContext<NewsContext>();
+            services.AddDbContextPool<NewsContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("CurrentNewsDb"));
+            });
             services.AddControllers();
         }
 
