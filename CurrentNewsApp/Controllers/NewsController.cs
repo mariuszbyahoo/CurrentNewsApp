@@ -22,15 +22,12 @@ namespace CurrentNewsApp.Controllers
         [HttpGet]
         public ActionResult GetNews()
         {
+            string news = _context.handler.GetNews("https://www.tvn24.pl/najnowsze.xml");
+
+
             if (_context.handler != null)
             {
-                News news = new News();
-                news.Data = _context.handler.GetNews("https://www.tvn24.pl/najnowsze.xml");
-                //_context.NewsSet.Add(news); 
-                //_context.SaveChanges(); This line throws : SqlException: Invalid object name 'NewsSet'.
-                // if uncommented
-
-                return Ok(news.Data);
+                return Ok(news);
             }
             else
             {
